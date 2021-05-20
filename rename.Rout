@@ -1,0 +1,243 @@
+
+R version 3.3.1 (2016-06-21) -- "Bug in Your Hair"
+Copyright (C) 2016 The R Foundation for Statistical Computing
+Platform: i386-w64-mingw32/i386 (32-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+[Previously saved workspace restored]
+
+> library(reshape2)
+> #oldDir<-"C:\\Users\\Fnaji\\Dropbox\\rprojects\\imageRename\\6312836 after washing"
+> print("starting")
+[1] "starting"
+> print(getwd())
+[1] "I:/101-000 Company basics - Operations/101-050 Manufacturing/Tools/ImageConverterTool"
+> print(.libPaths())
+[1] "C:/PamSoft/R/R-3.3.1/library"
+> 
+> library(EBImage)
+> convert<-read.delim2(file="convert.txt",stringsAsFactors=FALSE, header=FALSE)
+> rownames(convert)<-convert[[1]]
+> oldDir<-choose.dir()
+> 
+> newDir<-paste(oldDir,"-ImageResults",sep="")
+> cat("directory=",oldDir,"\n")
+directory= G:\Users\Marco\Dx images run 71,73,75\Run 071\After washing QC 100ms\6500715 
+> 
+> dir.create(newDir)
+> fileList<-list.files(oldDir, pattern=".\\.tif")
+> tempName<-'XXXXXX_YY_F1_T1_P1_I1_A1.tif'
+> 
+> 
+> 
+> for (i in 1:length(fileList)) {
++ #oldName<-'0123456 abcdef 01_01.tif'
++ #oldName<-'After blocking_50ms_01_01.tif'
++ print(i)
++ oldName<-fileList[i]
++ 
++ m<-regexpr("[[:digit:]]{7,9}", oldName)
++ if (m == -1) barcodePart='0000000' else barcodePart<-regmatches(oldName,m)
++ 
++ m<-regexpr("_[[:digit:]][[:digit:]]_[[:digit:]][[:digit:]]\\.tif", oldName)
++ wellPart<-regmatches(oldName,m)
++ wellPart<-substr(oldName, m+1,m+5) 
++ 
++ r <- convert[wellPart,3]
++ c <- convert[wellPart,4]
++ s <- convert[wellPart,5]
++ 
++ newName<-gsub(replacement=barcodePart,pattern="XXXXXX",tempName)
++ newName<-gsub(replacement=paste("W",convert[wellPart,2],sep=""),pattern="YY",newName)
++ 
++ newName<-paste(newDir,newName,sep="\\")
++ oldName<-paste(oldDir,oldName,sep="\\")
++ 
++ print(oldName)
++ print(newName)
++ file.copy(from=oldName, to=newName)
++ 
++ suppressWarnings(img<-readImage(newName,type= "tiff"))
++ 
++ bimg <-img
++ bimg <- bimg * 256
++ m <- median(bimg)
++ 
++ outputFile <- paste0(dirname(newName),"\\","median.txt")
++ oFile <- file(description=outputFile, open = "a+")
++ 
++ if (i==1) { 
++   oFile <- file(description=outputFile, open = "a+")
++   cat(file=oFile, "Row","\t", "Col","\t", "Strip", "\t", "OldName", "\t", "NewName", "\t", "Median", "\n")
++   }
++ 
++ cat(file=oFile, r,"\t",c,"\t", s, "\t", basename(oldName), "\t", basename(newName), "\t", as.character(m), "\n")
++ 
++ 
++ img <-img/4
++ 
++ suppressWarnings(writeImage(img,newName))
++ 
++ close(oFile)
++ 
++ }
+[1] 1
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715\\6500715_01_01.tif"
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715-ImageResults\\6500715_WA01_F1_T1_P1_I1_A1.tif"
+[1] 2
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715\\6500715_01_02.tif"
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715-ImageResults\\6500715_WB01_F1_T1_P1_I1_A1.tif"
+[1] 3
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715\\6500715_01_03.tif"
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715-ImageResults\\6500715_WC01_F1_T1_P1_I1_A1.tif"
+[1] 4
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715\\6500715_01_04.tif"
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715-ImageResults\\6500715_WD01_F1_T1_P1_I1_A1.tif"
+[1] 5
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715\\6500715_02_01.tif"
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715-ImageResults\\6500715_WA02_F1_T1_P1_I1_A1.tif"
+[1] 6
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715\\6500715_02_02.tif"
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715-ImageResults\\6500715_WB02_F1_T1_P1_I1_A1.tif"
+[1] 7
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715\\6500715_02_03.tif"
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715-ImageResults\\6500715_WC02_F1_T1_P1_I1_A1.tif"
+[1] 8
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715\\6500715_02_04.tif"
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715-ImageResults\\6500715_WD02_F1_T1_P1_I1_A1.tif"
+[1] 9
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715\\6500715_03_01.tif"
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715-ImageResults\\6500715_WA03_F1_T1_P1_I1_A1.tif"
+[1] 10
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715\\6500715_03_02.tif"
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715-ImageResults\\6500715_WB03_F1_T1_P1_I1_A1.tif"
+[1] 11
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715\\6500715_03_03.tif"
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715-ImageResults\\6500715_WC03_F1_T1_P1_I1_A1.tif"
+[1] 12
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715\\6500715_03_04.tif"
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715-ImageResults\\6500715_WD03_F1_T1_P1_I1_A1.tif"
+[1] 13
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715\\6500715_04_01.tif"
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715-ImageResults\\6500715_WA04_F1_T1_P1_I1_A1.tif"
+[1] 14
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715\\6500715_04_02.tif"
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715-ImageResults\\6500715_WB04_F1_T1_P1_I1_A1.tif"
+[1] 15
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715\\6500715_04_03.tif"
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715-ImageResults\\6500715_WC04_F1_T1_P1_I1_A1.tif"
+[1] 16
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715\\6500715_04_04.tif"
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715-ImageResults\\6500715_WD04_F1_T1_P1_I1_A1.tif"
+[1] 17
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715\\6500715_05_01.tif"
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715-ImageResults\\6500715_WA05_F1_T1_P1_I1_A1.tif"
+[1] 18
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715\\6500715_05_02.tif"
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715-ImageResults\\6500715_WB05_F1_T1_P1_I1_A1.tif"
+[1] 19
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715\\6500715_05_03.tif"
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715-ImageResults\\6500715_WC05_F1_T1_P1_I1_A1.tif"
+[1] 20
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715\\6500715_05_04.tif"
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715-ImageResults\\6500715_WD05_F1_T1_P1_I1_A1.tif"
+[1] 21
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715\\6500715_06_01.tif"
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715-ImageResults\\6500715_WA06_F1_T1_P1_I1_A1.tif"
+[1] 22
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715\\6500715_06_02.tif"
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715-ImageResults\\6500715_WB06_F1_T1_P1_I1_A1.tif"
+[1] 23
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715\\6500715_06_03.tif"
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715-ImageResults\\6500715_WC06_F1_T1_P1_I1_A1.tif"
+[1] 24
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715\\6500715_06_04.tif"
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715-ImageResults\\6500715_WD06_F1_T1_P1_I1_A1.tif"
+[1] 25
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715\\6500715_07_01.tif"
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715-ImageResults\\6500715_WA07_F1_T1_P1_I1_A1.tif"
+[1] 26
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715\\6500715_07_02.tif"
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715-ImageResults\\6500715_WB07_F1_T1_P1_I1_A1.tif"
+[1] 27
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715\\6500715_07_03.tif"
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715-ImageResults\\6500715_WC07_F1_T1_P1_I1_A1.tif"
+[1] 28
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715\\6500715_07_04.tif"
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715-ImageResults\\6500715_WD07_F1_T1_P1_I1_A1.tif"
+[1] 29
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715\\6500715_08_01.tif"
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715-ImageResults\\6500715_WA08_F1_T1_P1_I1_A1.tif"
+[1] 30
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715\\6500715_08_02.tif"
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715-ImageResults\\6500715_WB08_F1_T1_P1_I1_A1.tif"
+[1] 31
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715\\6500715_08_03.tif"
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715-ImageResults\\6500715_WC08_F1_T1_P1_I1_A1.tif"
+[1] 32
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715\\6500715_08_04.tif"
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715-ImageResults\\6500715_WD08_F1_T1_P1_I1_A1.tif"
+[1] 33
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715\\6500715_09_01.tif"
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715-ImageResults\\6500715_WA09_F1_T1_P1_I1_A1.tif"
+[1] 34
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715\\6500715_09_02.tif"
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715-ImageResults\\6500715_WB09_F1_T1_P1_I1_A1.tif"
+[1] 35
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715\\6500715_09_03.tif"
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715-ImageResults\\6500715_WC09_F1_T1_P1_I1_A1.tif"
+[1] 36
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715\\6500715_09_04.tif"
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715-ImageResults\\6500715_WD09_F1_T1_P1_I1_A1.tif"
+[1] 37
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715\\6500715_10_01.tif"
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715-ImageResults\\6500715_WA10_F1_T1_P1_I1_A1.tif"
+[1] 38
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715\\6500715_10_02.tif"
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715-ImageResults\\6500715_WB10_F1_T1_P1_I1_A1.tif"
+[1] 39
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715\\6500715_10_03.tif"
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715-ImageResults\\6500715_WC10_F1_T1_P1_I1_A1.tif"
+[1] 40
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715\\6500715_10_04.tif"
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715-ImageResults\\6500715_WD10_F1_T1_P1_I1_A1.tif"
+[1] 41
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715\\6500715_11_01.tif"
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715-ImageResults\\6500715_WA11_F1_T1_P1_I1_A1.tif"
+[1] 42
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715\\6500715_11_02.tif"
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715-ImageResults\\6500715_WB11_F1_T1_P1_I1_A1.tif"
+[1] 43
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715\\6500715_11_03.tif"
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715-ImageResults\\6500715_WC11_F1_T1_P1_I1_A1.tif"
+[1] 44
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715\\6500715_11_04.tif"
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715-ImageResults\\6500715_WD11_F1_T1_P1_I1_A1.tif"
+[1] 45
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715\\6500715_12_01.tif"
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715-ImageResults\\6500715_WA12_F1_T1_P1_I1_A1.tif"
+[1] 46
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715\\6500715_12_02.tif"
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715-ImageResults\\6500715_WB12_F1_T1_P1_I1_A1.tif"
+[1] 47
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715\\6500715_12_03.tif"
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715-ImageResults\\6500715_WC12_F1_T1_P1_I1_A1.tif"
+[1] 48
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715\\6500715_12_04.tif"
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715-ImageResults\\6500715_WD12_F1_T1_P1_I1_A1.tif"
+[1] 49
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715\\6500715_13_01.tif"
+[1] "G:\\Users\\Marco\\Dx images run 71,73,75\\Run 071\\After washing QC 100ms\\6500715-ImageResults\\6500715_WE01_F1_T1_P1_I1_A1.tif"
