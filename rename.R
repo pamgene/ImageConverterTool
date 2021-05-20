@@ -1,6 +1,9 @@
+if ( ! ("reshape2" %in% installed.packages())) install.packages("reshape2")
+if ( ! ("BiocManager" %in% installed.packages())) install.packages("BiocManager")
+if ( ! ("EBImage" %in% installed.packages())) BiocManager::install("EBImage")
 
 library(reshape2)
-#oldDir<-"C:\\Users\\Fnaji\\Dropbox\\rprojects\\imageRename\\6312836 after washing"
+
 print("starting")
 print(getwd())
 print(.libPaths())
