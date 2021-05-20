@@ -20,8 +20,6 @@ dir.create(newDir)
 fileList<-list.files(oldDir, pattern=".\\.tif")
 tempName<-'XXXXXX_YY_F1_T1_P1_I1_A1.tif'
 
-
-
 for (i in 1:length(fileList)) {
 #oldName<-'0123456 abcdef 01_01.tif'
 #oldName<-'After blocking_50ms_01_01.tif'

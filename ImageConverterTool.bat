@@ -1,4 +1,4 @@
-set path=%PATH%;C:\PamSoft\R\R-3.3.1\bin\i386
-set R_HOME=C:\PamSoft\R\R-3.3.1
-R CMD BATCH rename.R
+echo "startin R"
+set RSCRIPT="C:\PamSoft\R\R-4.0.3\bin\x64\Rscript.exe"
+%RSCRIPT% --no-init-file rename.r
 pause
