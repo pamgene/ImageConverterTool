@@ -1,5 +1,5 @@
-if ( ! ("reshape2" %in% installed.packages())) install.packages("reshape2")
-if ( ! ("BiocManager" %in% installed.packages())) install.packages("BiocManager")
+if ( ! ("reshape2" %in% installed.packages())) install.packages("reshape2", repos = "https://cloud.r-project.org/")
+if ( ! ("BiocManager" %in% installed.packages())) install.packages("BiocManager", repos = "https://cloud.r-project.org/")
 if ( ! ("EBImage" %in% installed.packages())) BiocManager::install("EBImage")
 
 library(reshape2)
